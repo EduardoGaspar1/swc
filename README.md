@@ -1,2 +1,2 @@
 # swc
-smart wan control
+Smart WAN Control
