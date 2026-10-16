@@ -1,7 +1,10 @@
 ### **Backend**
 php artisan xxx
+#
 composer xxx
+#
 php artisan test
+#
 docker start swc-mysql + php artisan serve
 ###
 php artisan make:model Sede -mfc        # model + migration + factory + controller
