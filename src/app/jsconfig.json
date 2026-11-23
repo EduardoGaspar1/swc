@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
+  "include": ["./src/**/*", "./src/route-map.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
