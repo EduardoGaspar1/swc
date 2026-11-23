@@ -1,0 +1,16 @@
+name: Check source branch
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Só permitir development -> main
+        run: |
+          if [ "${{ github.head_ref }}" != "development" ]; then
+            echo "PRs para main só podem vir de development"
+            exit 1
+          fi
