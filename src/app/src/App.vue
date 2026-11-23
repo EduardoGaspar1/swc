@@ -1,11 +1,19 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import UserMenu from '@/components/UserMenu.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const route = useRoute()
+
+const showChrome = computed(() => route.path !== '/login' && auth.isAuthenticated)
 </script>
 
 <template>
-  <div class="app-shell">
-    <header class="app-header">
-      <div class="brand">
+  <div class="app-shell" :class="{ 'is-login': route.path === '/login' }">
+    <header v-if="showChrome" class="app-header">
+      <RouterLink class="brand" to="/">
         <span class="brand-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75">
             <circle cx="12" cy="12" r="9" />
@@ -16,17 +24,9 @@ import { RouterView } from 'vue-router'
           </svg>
         </span>
         <span class="brand-name">WAN Smart Control</span>
-      </div>
+      </RouterLink>
 
-      <div class="user">
-        <span class="user-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75">
-            <circle cx="12" cy="8" r="3.5" />
-            <path d="M5 19.5c1.5-3 4-4.5 7-4.5s5.5 1.5 7 4.5" />
-          </svg>
-        </span>
-        <span>Administrador</span>
-      </div>
+      <UserMenu />
     </header>
 
     <RouterView />
@@ -38,10 +38,15 @@ import { RouterView } from 'vue-router'
   padding-top: 1.25rem;
 }
 
+.app-shell.is-login {
+  padding-top: 0;
+}
+
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.75rem;
 }
 
@@ -60,16 +65,9 @@ import { RouterView } from 'vue-router'
   color: var(--swc-text-muted);
 }
 
-.user {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--swc-text-muted);
-  font-size: 0.95rem;
-}
-
-.user-icon {
-  display: inline-flex;
-  opacity: 0.9;
+@media (max-width: 560px) {
+  .app-header {
+    flex-wrap: wrap;
+  }
 }
 </style>
