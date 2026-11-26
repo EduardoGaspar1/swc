@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
-import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/useUserStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +14,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  const auth = useAuthStore()
+  const auth = useUserStore()
 
   if (!auth.initialized) {
     await auth.initialize()

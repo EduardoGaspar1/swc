@@ -1,9 +1,9 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/useUserStore'
 
-const auth = useAuthStore()
+const auth = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -42,6 +42,7 @@ function extractError(err) {
     fieldErrors.value = Object.fromEntries(
       Object.entries(data.errors).map(([key, messages]) => [key, messages?.[0] ?? '']),
     )
+    return ''
   }
   return data?.message || 'No se pudo completar la operación. Inténtalo de nuevo.'
 }

@@ -1,9 +1,9 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/useUserStore'
 
-const auth = useAuthStore()
+const auth = useUserStore()
 const router = useRouter()
 
 const open = ref(false)

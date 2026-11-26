@@ -1,44 +1,41 @@
-# app
+# SWC — Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplicación Vue 3 (Vite) del panel **WAN Smart Control**.
 
-## Recommended IDE Setup
+## Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Vue 3 + Pinia + Vue Router 5 (file-based routing)
+- Axios
+- Tema oscuro propio (`--swc-*`)
 
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Arranque
 
 ```sh
+cp .env.example .env   # VITE_API_URL=http://127.0.0.1:8000/api
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+App en `http://localhost:5173`. La API debe estar en marcha (`php artisan serve` en `src/api`).
+
+## Estructura de páginas
+
+Las rutas se generan automáticamente desde `src/pages`:
+
+| Ruta | Fichero |
+|---|---|
+| `/` | `src/pages/index.vue` |
+| `/login` | `src/pages/login/index.vue` |
+| `/settings` | `src/pages/settings/index.vue` |
+| `/sedes` | `src/pages/sedes/index.vue` |
+| `/enlaces` | `src/pages/enlaces/index.vue` |
+
+Auth: token Sanctum en cookie `swc_token`, enviado como `Authorization: Bearer …`.
+
+## Scripts
 
 ```sh
+npm run dev
 npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
 npm run lint
 ```

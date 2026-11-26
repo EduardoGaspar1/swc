@@ -7,19 +7,27 @@ php artisan test
 #
 docker start swc-mysql + php artisan serve
 ###
-php artisan make:model Sede -mfc        # model + migration + factory + controller
-#
-php artisan make:controller SedeController --api
-#
 php artisan migrate
 #
 php artisan migrate:fresh --seed        **DEVELOPMENT ONLY**
 #
 php artisan migrate:rollback
 #
-php artisan route:list
+php artisan route:list --path=api
 #
 php artisan tinker                      # consola para testar modelos
+
+###
+**API útil (auth + CRUD)**
+# login
+curl -s -X POST http://127.0.0.1:8000/api/auth/login \
+  -H 'Accept: application/json' -H 'Content-Type: application/json' \
+  -d '{"email":"im2026238@imesmaresme.com","password":"password"}'
+#
+# sedes / enlaces (Bearer token)
+curl -s http://127.0.0.1:8000/api/sedes -H "Authorization: Bearer TOKEN" -H 'Accept: application/json'
+#
+curl -s http://127.0.0.1:8000/api/enlaces -H "Authorization: Bearer TOKEN" -H 'Accept: application/json'
 
 ###
 **INICIAR SERVIDOR**

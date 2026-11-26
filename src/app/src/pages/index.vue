@@ -1,24 +1,16 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { getAlerts } from '@/api/alerts'
-import { getLinks, getSummary } from '@/api/network'
+import { storeToRefs } from 'pinia'
 import AlertsList from '@/components/dashboard/AlertsList.vue'
 import KpiCard from '@/components/dashboard/KpiCard.vue'
 import LinksTable from '@/components/dashboard/LinksTable.vue'
+import { useDashboardStore } from '@/stores/useDashboardStore'
+
+const dashboardStore = useDashboardStore()
+const { summary, links, alerts } = storeToRefs(dashboardStore)
 
 const loading = ref(true)
 const error = ref(null)
-
-const summary = ref({
-  sedesConectadas: 0,
-  sedesTotal: 0,
-  enlacesActivos: 0,
-  enlacesTotal: 0,
-  latenciaMediaMs: null,
-  alertasActivas: 0,
-})
-const links = ref([])
-const alerts = ref([])
 
 const sedesValue = computed(
   () => `${summary.value.sedesConectadas} / ${summary.value.sedesTotal}`,
@@ -34,14 +26,7 @@ const alertasAccent = computed(() => (summary.value.alertasActivas > 0 ? 'danger
 
 onMounted(async () => {
   try {
-    const [summaryRes, linksRes, alertsRes] = await Promise.all([
-      getSummary(),
-      getLinks(),
-      getAlerts(),
-    ])
-    summary.value = summaryRes.data
-    links.value = linksRes.data.data ?? []
-    alerts.value = alertsRes.data.data ?? []
+    await dashboardStore.fetch()
   } catch {
     error.value = 'No se pudo cargar el dashboard. Comprueba la conexión con la API.'
   } finally {
