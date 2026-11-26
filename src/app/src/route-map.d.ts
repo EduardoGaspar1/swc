@@ -38,9 +38,23 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/enlaces/': RouteRecordInfo<
+      '/enlaces/',
+      '/enlaces',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/login/': RouteRecordInfo<
       '/login/',
       '/login',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/sedes/': RouteRecordInfo<
+      '/sedes/',
+      '/sedes',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -73,9 +87,25 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
+    'src/pages/enlaces/index.vue': {
+      routes:
+        | '/enlaces/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
     'src/pages/login/index.vue': {
       routes:
         | '/login/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/sedes/index.vue': {
+      routes:
+        | '/sedes/'
       views:
         | never
       pathParamNames:

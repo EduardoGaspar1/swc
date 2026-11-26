@@ -1,8 +1,8 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/useUserStore'
 
-const auth = useAuthStore()
+const auth = useUserStore()
 
 const form = reactive({
   name: auth.user?.name || '',
@@ -28,6 +28,7 @@ function extractError(err) {
     fieldErrors.value = Object.fromEntries(
       Object.entries(data.errors).map(([key, messages]) => [key, messages?.[0] ?? '']),
     )
+    return ''
   }
   return data?.message || 'No se pudo guardar los cambios. Inténtalo de nuevo.'
 }
@@ -47,7 +48,7 @@ async function onSubmit() {
   }
 
   try {
-    const data = await auth.updateProfile(payload)
+    const { data } = await auth.update(payload)
     form.name = data.user.name
     form.password = ''
     form.password_confirmation = ''
