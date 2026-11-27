@@ -95,4 +95,13 @@ Una tarea se considera terminada cuando:
 
 ## Estado actual
 
+**Sprint 2 (16/11/2026 – 30/11/2026):** ampliación del modelo de datos y panel de administración.
+
+- Modelo E-R ampliado en MySQL: tablas `companies`, `sedes`, `enlaces` y `alertas`; `users` y `sedes` vinculados a una empresa (`company_id`).
+- Panel de administración: rutas `/admin` para gestionar empresas (listar, crear, eliminar) y usuarios (listar, crear, editar, eliminar).
+- Protección de las rutas de administración mediante el middleware `EnsureAdmin`: solo el usuario con rol de administrador accede; el resto recibe un `403`.
+- Dashboard actualizado con 4 sedes y 4 enlaces. **Los datos siguen siendo estáticos**; se sustituirán por datos reales de la red.
+- Repositorio: 34 commits, 6 ramas y Pull Request #42 fusionada (`companies y admin dashboard`).
+- Regla `check-source-branch` (GitHub Actions): los Pull Requests hacia `main` solo se permiten desde `development`.
+
 **Sprint 1 (07/10/2026 – 21/10/2026):** arranque del proyecto, backlog inicial y capítulo 1 de la memoria.
