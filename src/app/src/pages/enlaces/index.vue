@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Pencil, Plus, Trash2, X } from '@lucide/vue'
+import { useFlashMessage } from '@/composables/useFlashMessage'
 import { useEnlacesStore } from '@/stores/useEnlacesStore'
 import { useSedesStore } from '@/stores/useSedesStore'
 
@@ -9,6 +10,7 @@ const enlacesStore = useEnlacesStore()
 const sedesStore = useSedesStore()
 const { enlaces } = storeToRefs(enlacesStore)
 const { sedes } = storeToRefs(sedesStore)
+const { message: success, flash: flashSuccess, clear: clearSuccess } = useFlashMessage()
 
 const statusLabel = {
   operativo: 'Operativo',
@@ -20,7 +22,6 @@ const loading = ref(true)
 const saving = ref(false)
 const listError = ref('')
 const formError = ref('')
-const success = ref('')
 const fieldErrors = ref({})
 const editingId = ref(null)
 const modalOpen = ref(false)
@@ -53,7 +54,7 @@ function resetForm() {
 
 function openCreate() {
   resetForm()
-  success.value = ''
+  clearSuccess()
   modalOpen.value = true
 }
 
@@ -65,7 +66,7 @@ function openEdit(enlace) {
   form.latenciaMs = enlace.latenciaMs == null ? '' : String(enlace.latenciaMs)
   form.perdidaPct = enlace.perdidaPct
   formError.value = ''
-  success.value = ''
+  clearSuccess()
   fieldErrors.value = {}
   modalOpen.value = true
 }
@@ -111,16 +112,16 @@ async function loadAll() {
 async function onSubmit() {
   saving.value = true
   formError.value = ''
-  success.value = ''
+  clearSuccess()
   fieldErrors.value = {}
 
   try {
     if (editingId.value) {
       const { data } = await enlacesStore.update({ id: editingId.value, ...buildPayload() })
-      success.value = data.message
+      flashSuccess(data.message)
     } else {
       const { data } = await enlacesStore.store(buildPayload())
-      success.value = data.message
+      flashSuccess(data.message)
     }
     closeModal()
     await loadAll()
@@ -136,11 +137,11 @@ async function onDelete(enlace) {
   if (!ok) return
 
   listError.value = ''
-  success.value = ''
+  clearSuccess()
   try {
     const { data } = await enlacesStore.delete(enlace)
     if (editingId.value === enlace.id) closeModal()
-    success.value = data.message
+    flashSuccess(data.message)
     await loadAll()
   } catch (err) {
     listError.value = extractError(err)

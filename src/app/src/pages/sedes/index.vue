@@ -3,17 +3,23 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Pencil, Plus, Trash2, X } from '@lucide/vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import { useFlashMessage } from '@/composables/useFlashMessage'
+import { useAdminStore } from '@/stores/useAdminStore'
 import { useSedesStore } from '@/stores/useSedesStore'
+import { useUserStore } from '@/stores/useUserStore'
 
+const auth = useUserStore()
 const sedesStore = useSedesStore()
+const adminStore = useAdminStore()
 const { sedes } = storeToRefs(sedesStore)
+const { companies } = storeToRefs(adminStore)
+const { message: success, flash: flashSuccess, clear: clearSuccess } = useFlashMessage()
 
 const loading = ref(true)
 const saving = ref(false)
 const deleting = ref(false)
 const listError = ref('')
 const formError = ref('')
-const success = ref('')
 const fieldErrors = ref({})
 const editingId = ref(null)
 const modalOpen = ref(false)
@@ -29,6 +35,7 @@ const form = reactive({
   nombre: '',
   codigo: '',
   conectada: true,
+  company_id: '',
 })
 
 const modalTitle = computed(() => (editingId.value ? 'Editar sede' : 'Nueva sede'))
@@ -42,13 +49,14 @@ function resetForm() {
   form.nombre = ''
   form.codigo = ''
   form.conectada = true
+  form.company_id = auth.user?.company_id ?? ''
   fieldErrors.value = {}
   formError.value = ''
 }
 
 function openCreate() {
   resetForm()
-  success.value = ''
+  clearSuccess()
   modalOpen.value = true
 }
 
@@ -57,8 +65,9 @@ function openEdit(sede) {
   form.nombre = sede.nombre
   form.codigo = sede.codigo
   form.conectada = sede.conectada
+  form.company_id = sede.company_id ?? ''
   formError.value = ''
-  success.value = ''
+  clearSuccess()
   fieldErrors.value = {}
   modalOpen.value = true
 }
@@ -83,7 +92,9 @@ async function loadSedes() {
   loading.value = true
   listError.value = ''
   try {
-    await sedesStore.fetch()
+    const tasks = [sedesStore.fetch()]
+    if (auth.isAdmin) tasks.push(adminStore.fetchCompanies())
+    await Promise.all(tasks)
   } catch {
     listError.value = 'No se pudieron cargar las sedes.'
   } finally {
@@ -94,7 +105,7 @@ async function loadSedes() {
 async function onSubmit() {
   saving.value = true
   formError.value = ''
-  success.value = ''
+  clearSuccess()
   fieldErrors.value = {}
 
   const payload = {
@@ -103,13 +114,17 @@ async function onSubmit() {
     conectada: form.conectada,
   }
 
+  if (auth.isAdmin) {
+    payload.company_id = form.company_id === '' ? null : Number(form.company_id)
+  }
+
   try {
     if (editingId.value) {
       const { data } = await sedesStore.update({ id: editingId.value, ...payload })
-      success.value = data.message
+      flashSuccess(data.message)
     } else {
       const { data } = await sedesStore.store(payload)
-      success.value = data.message
+      flashSuccess(data.message)
     }
     closeModal()
     await loadSedes()
@@ -136,11 +151,11 @@ async function confirmDelete() {
 
   deleting.value = true
   listError.value = ''
-  success.value = ''
+  clearSuccess()
   try {
     const { data } = await sedesStore.delete(sede)
     if (editingId.value === sede.id) closeModal()
-    success.value = data.message
+    flashSuccess(data.message)
     confirmOpen.value = false
     pendingDelete.value = null
     await loadSedes()
@@ -195,6 +210,7 @@ onBeforeUnmount(() => {
             <tr>
               <th>Nombre</th>
               <th>Código</th>
+              <th v-if="auth.isAdmin">Empresa</th>
               <th>Estado</th>
               <th class="col-actions">Acciones</th>
             </tr>
@@ -203,6 +219,7 @@ onBeforeUnmount(() => {
             <tr v-for="sede in sedes" :key="sede.id">
               <td>{{ sede.nombre }}</td>
               <td><code>{{ sede.codigo }}</code></td>
+              <td v-if="auth.isAdmin">{{ sede.company?.nombre || '—' }}</td>
               <td>
                 <span class="badge" :class="sede.conectada ? 'ok' : 'off'">
                   {{ sede.conectada ? 'Conectada' : 'Desconectada' }}
@@ -289,6 +306,17 @@ onBeforeUnmount(() => {
                 placeholder="central"
               />
               <span v-if="fieldErrors.codigo" class="field-error">{{ fieldErrors.codigo }}</span>
+            </label>
+
+            <label v-if="auth.isAdmin" class="field">
+              <span>Empresa</span>
+              <select v-model="form.company_id" required>
+                <option value="" disabled>Selecciona una empresa</option>
+                <option v-for="company in companies" :key="company.id" :value="company.id">
+                  {{ company.nombre }}
+                </option>
+              </select>
+              <span v-if="fieldErrors.company_id" class="field-error">{{ fieldErrors.company_id }}</span>
             </label>
 
             <label class="check">
@@ -378,7 +406,8 @@ onBeforeUnmount(() => {
   font-size: 0.9rem;
 }
 
-.field input {
+.field input,
+.field select {
   appearance: none;
   width: 100%;
   border: 1px solid var(--swc-border);
@@ -390,7 +419,8 @@ onBeforeUnmount(() => {
   outline: none;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
   border-color: var(--swc-info);
 }
 

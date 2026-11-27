@@ -20,7 +20,10 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        $user = User::query()->create($validated);
+        $user = User::query()->create([
+            ...$validated,
+            'role' => User::ROLE_USER,
+        ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -51,7 +54,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Sesión iniciada correctamente.',
-            'user' => $this->userPayload($user),
+            'user' => $this->userPayload($user->load('company:id,nombre,codigo')),
             'token' => $token,
             'token_type' => 'Bearer',
         ]);
@@ -69,7 +72,7 @@ class UserController extends Controller
     public function me(Request $request): JsonResponse
     {
         return response()->json([
-            'user' => $this->userPayload($request->user()),
+            'user' => $this->userPayload($request->user()->load('company:id,nombre,codigo')),
         ]);
     }
 
@@ -92,19 +95,39 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Perfil actualizado correctamente.',
-            'user' => $this->userPayload($user->fresh()),
+            'user' => $this->userPayload($user->fresh()->load('company:id,nombre,codigo')),
         ]);
     }
 
     /**
-     * @return array{id: int, name: string, email: string}
+     * @return array{
+     *   id: int,
+     *   name: string,
+     *   email: string,
+     *   role: int,
+     *   company_id: int|null,
+     *   company: array{id: int, nombre: string, codigo: string}|null
+     * }
      */
     private function userPayload(User $user): array
     {
+        if (! $user->relationLoaded('company')) {
+            $user->load('company:id,nombre,codigo');
+        }
+
         return [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'role' => (int) $user->role,
+            'company_id' => $user->company_id,
+            'company' => $user->company
+                ? [
+                    'id' => $user->company->id,
+                    'nombre' => $user->company->nombre,
+                    'codigo' => $user->company->codigo,
+                ]
+                : null,
         ];
     }
 }

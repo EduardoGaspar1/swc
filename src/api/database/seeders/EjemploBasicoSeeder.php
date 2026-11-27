@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Alerta;
+use App\Models\Company;
 use App\Models\Enlace;
 use App\Models\Sede;
 use Illuminate\Database\Seeder;
@@ -16,26 +17,34 @@ class EjemploBasicoSeeder extends Seeder
      */
     public function run(): void
     {
-        Alerta::query()->delete();
-        Enlace::query()->delete();
-        Sede::query()->delete();
+        Alerta::withTrashed()->forceDelete();
+        Enlace::withTrashed()->forceDelete();
+        Sede::withTrashed()->forceDelete();
+
+        $company = Company::query()->firstOrCreate(
+            ['codigo' => 'demo'],
+            ['nombre' => 'Empresa Demo'],
+        );
 
         $central = Sede::create([
             'nombre' => 'Central',
             'codigo' => 'central',
             'conectada' => true,
+            'company_id' => $company->id,
         ]);
 
         $sede2 = Sede::create([
             'nombre' => 'Sede 2',
             'codigo' => 'sede-2',
             'conectada' => true,
+            'company_id' => $company->id,
         ]);
 
         $sede3 = Sede::create([
             'nombre' => 'Sede 3',
             'codigo' => 'sede-3',
             'conectada' => true,
+            'company_id' => $company->id,
         ]);
 
         Enlace::create([

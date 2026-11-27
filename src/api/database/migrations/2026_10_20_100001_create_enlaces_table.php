@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('latencia_ms')->nullable();
             $table->unsignedTinyInteger('perdida_pct')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['sede_origen_id', 'sede_destino_id']);
         });
