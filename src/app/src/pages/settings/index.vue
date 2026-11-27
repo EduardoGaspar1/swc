@@ -1,8 +1,10 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
+import { useFlashMessage } from '@/composables/useFlashMessage'
 import { useUserStore } from '@/stores/useUserStore'
 
 const auth = useUserStore()
+const { message: success, flash: flashSuccess, clear: clearSuccess } = useFlashMessage()
 
 const form = reactive({
   name: auth.user?.name || '',
@@ -11,7 +13,6 @@ const form = reactive({
 })
 
 const error = ref('')
-const success = ref('')
 const fieldErrors = ref({})
 
 watch(
@@ -35,7 +36,7 @@ function extractError(err) {
 
 async function onSubmit() {
   error.value = ''
-  success.value = ''
+  clearSuccess()
   fieldErrors.value = {}
 
   const payload = {
@@ -52,7 +53,7 @@ async function onSubmit() {
     form.name = data.user.name
     form.password = ''
     form.password_confirmation = ''
-    success.value = data.message || 'Perfil actualizado correctamente.'
+    flashSuccess(data.message || 'Perfil actualizado correctamente.')
   } catch (err) {
     error.value = extractError(err)
   }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->boolean('activa')->default(true);
             $table->timestamp('ocurrio_en');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

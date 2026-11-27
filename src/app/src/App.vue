@@ -9,11 +9,19 @@ const route = useRoute()
 
 const showChrome = computed(() => route.path !== '/login' && auth.isAuthenticated)
 
-const navItems = [
-  { to: '/', label: 'Dashboard', match: (path) => path === '/' },
-  { to: '/sedes', label: 'Sedes', match: (path) => path.startsWith('/sedes') },
-  { to: '/enlaces', label: 'Enlaces', match: (path) => path.startsWith('/enlaces') },
-]
+const navItems = computed(() => {
+  const items = [
+    { to: '/', label: 'Dashboard', match: (path) => path === '/' },
+    { to: '/sedes', label: 'Sedes', match: (path) => path.startsWith('/sedes') },
+    { to: '/enlaces', label: 'Enlaces', match: (path) => path.startsWith('/enlaces') },
+  ]
+
+  if (auth.isAdmin) {
+    items.push({ to: '/admin', label: 'Admin', match: (path) => path.startsWith('/admin') })
+  }
+
+  return items
+})
 </script>
 
 <template>

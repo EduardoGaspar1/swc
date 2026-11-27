@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('codigo')->unique();
             $table->boolean('conectada')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -19,6 +19,10 @@ export default defineConfig({
         } else {
           route.addToMeta({ requiresAuth: true })
         }
+
+        if (route.fullPath === '/admin' || route.fullPath.startsWith('/admin/')) {
+          route.addToMeta({ requiresAdmin: true })
+        }
       },
     }),
     vue(),

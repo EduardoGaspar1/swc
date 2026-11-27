@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\CompanyController as AdminCompanyController;
+use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\AlertController;
 use App\Http\Controllers\Api\EnlaceController;
 use App\Http\Controllers\Api\NetworkController;
@@ -30,4 +32,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('enlaces', EnlaceController::class);
 
     Route::get('/alerts', [AlertController::class, 'index']);
+
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/companies', [AdminCompanyController::class, 'index']);
+        Route::post('/companies', [AdminCompanyController::class, 'store']);
+        Route::delete('/companies/{company}', [AdminCompanyController::class, 'destroy']);
+
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::post('/users', [AdminUserController::class, 'store']);
+        Route::put('/users/{user}', [AdminUserController::class, 'update']);
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy']);
+    });
 });
