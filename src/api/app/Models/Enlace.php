@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['sede_origen_id', 'sede_destino_id', 'estado', 'latencia_ms', 'perdida_pct'])]
 class Enlace extends Model
 {
+    use SoftDeletes;
+
     protected function casts(): array
     {
         return [
