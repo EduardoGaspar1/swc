@@ -103,5 +103,7 @@ Una tarea se considera terminada cuando:
 - Dashboard actualizado con 4 sedes y 4 enlaces. **Los datos siguen siendo estáticos**; se sustituirán por datos reales de la red.
 - Repositorio: 34 commits, 6 ramas y Pull Request #42 fusionada (`companies y admin dashboard`).
 - Regla `check-source-branch` (GitHub Actions): los Pull Requests hacia `main` solo se permiten desde `development`.
+- Red WAN funcional en local. 3 routers como sedes configuradas y connectividad entre ellas.
+- OSPF funcional en la red. Autoredirección de los datos en caso de caídas.
 
 **Sprint 1 (07/10/2026 – 21/10/2026):** arranque del proyecto, backlog inicial y capítulo 1 de la memoria.
