@@ -76,10 +76,10 @@ Trabajo por sprints con GitHub Projects (tablero Kanban), Issues, Milestones y P
 
 | Rol | Responsable |
 |---|---|
-| Coordinación / Scrum Master | _por asignar_ |
+| Coordinación / Scrum Master | Ambos |
 | Responsable técnico (aplicación) | Eduardo Silva |
 | Responsable técnico (red) | Alex Luis |
-| Responsable de documentación | _por asignar_ |
+| Responsable de documentación | Ambos |
 
 Los roles pueden rotar entre sprints.
 
