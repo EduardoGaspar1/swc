@@ -107,3 +107,8 @@ Una tarea se considera terminada cuando:
 - OSPF funcional en la red. Autoredirección de los datos en caso de caídas.
 
 **Sprint 1 (07/10/2026 – 21/10/2026):** arranque del proyecto, backlog inicial y capítulo 1 de la memoria.
+
+**Sprint 2 (16/11/2026 – 30/11/2026):** ampliación del modelo de datos y panel de administración.
+
+- Red WAN funcional en local. 3 routers como sedes configuradas y connectividad entre ellas.
+- OSPF funcional en la red. Autoredirección de los datos en caso de caídas.
